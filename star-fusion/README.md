@@ -49,7 +49,7 @@ optional arguments:
 
 ##### Run command
 ```
-docker run -it --rm -v `pwd`:/data jpfeil/star-fusion:0.0.1 \
+docker run -it --rm -v `pwd`:/data jpfeil/star-fusion:0.0.2 \
                                    --left_fq 1.fq.gz \
                                    --right_fq 2.fq.gz \
                                    --output_dir fusion_output \
