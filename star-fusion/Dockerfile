@@ -62,7 +62,8 @@ ENV PATH "/opt/bowtie2-2.3.1:/opt/trinityrnaseq-Trinity-v2.4.0:/opt/FusionInspec
 
 # Add wrapper scripts
 COPY star_fusion_pipeline.py /opt/star_fusion_pipeline.py
-COPY genelist.txt /home/genelist.txt
+COPY gene-list /home/gene-list
+COPY save-list /home/save-list
 COPY delete-list /home/delete-list
 
 # Data processing occurs at /data

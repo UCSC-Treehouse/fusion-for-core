@@ -13,7 +13,7 @@ Gene fusions play a major role in tumorigenesis, so it is crucial that Treehouse
 
 REPOSITORY: jpfeil/star-fusion
 
-TAG: 0.0.2
+TAG: 0.1.0
 
 IMAGE ID: bb0c8be35574
 
@@ -49,7 +49,7 @@ optional arguments:
 
 ##### Run command
 ```
-docker run -it --rm -v `pwd`:/data jpfeil/star-fusion:0.0.2 \
+docker run -it --rm -v `pwd`:/data jpfeil/star-fusion:0.1.0 \
                                    --left_fq 1.fq.gz \
                                    --right_fq 2.fq.gz \
                                    --output_dir fusion_output \
