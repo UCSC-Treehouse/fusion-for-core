@@ -26,7 +26,7 @@ The pipeline requires paired-end fastq files, the output directory, and the geno
 usage: star_fusion_pipeline.py [-h] --left_fq R1 --right_fq R2 --output_dir
                                OUTPUT_DIR --genome_lib_dir GENOME_LIB_DIR
                                [--CPU CPU] [--genelist GENELIST]
-                               [--skip_filter] [-F] [--test]
+                               [--skip-filter] [-F] [--clean] [--test]
 
 Wraps STAR-Fusion program and filters output using FusionInspector.
 
@@ -37,15 +37,15 @@ optional arguments:
   --output_dir OUTPUT_DIR
                         Output directory
   --genome_lib_dir GENOME_LIB_DIR
-                        Genome library directory
-  --CPU CPU             Number of cores
+                        Reference genome directory
+  --CPU CPU             Number of jobs to run in parallel
   --genelist GENELIST
-  --skip_filter
+  --skip-filter
   -F, --run_fusion_inspector
-                        Runs FusionInspector on output
+                        Runs FusionInspector on STAR-Fusion output
+  --clean               Cleans output directory
   --test
 ```
-
 
 ##### Run command
 ```
