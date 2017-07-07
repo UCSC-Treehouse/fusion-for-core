@@ -108,7 +108,7 @@ def pipeline(args):
                 raise ValueError('Expected file %s not found' % line)
 
             else:
-                shutil.copy(line, os.path.join('fusion', os.path.basename(line)))
+                shutil.move(line, os.path.join('fusion', os.path.basename(line)))
 
 
 def main():
