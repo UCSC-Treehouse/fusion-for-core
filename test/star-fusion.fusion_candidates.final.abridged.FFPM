@@ -1,0 +1,2 @@
+#FusionName	JunctionReadCount	SpanningFragCount	SpliceType	LeftGene	LeftBreakpoint	RightGene	RightBreakpoint	LargeAnchorSupport	LeftBreakDinuc	LeftBreakEntropy	RightBreakDinuc	RightBreakEntropy	J_FFPM	S_FFPM
+CD74--ROS1	4	0	ONLY_REF_SPLICE	CD74^ENSG00000019582.14	chr5:150404680:-	ROS1^ENSG00000047936.10	chr6:117324415:-	YES_LDAS	GT	1.7819	AG	1.7465	7.0324	0.0000

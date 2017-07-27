@@ -1,0 +1,2 @@
+#FusionName	JunctionReadCount	SpanningFragCount	LeftGene	LeftLocalBreakpoint	LeftBreakpoint	RightGene	RightLocalBreakpoint	RightBreakpoint	SpliceType	LargeAnchorSupport	NumCounterFusionLeft	NumCounterFusionRight	FAF_left	FAF_right	LeftBreakDinuc	LeftBreakEntropy	RightBreakDinuc	RightBreakEntropy	J_FFPM	S_FFPM
+CD74--ROS1	4	0	CD74	4950	chr5:150404680:-	ROS1	46835	chr6:117324415:-	ONLY_REF_SPLICE	YES	0	0	1.00	1.00	GT	1.7819	AG	1.7465	7.0324	0.0000

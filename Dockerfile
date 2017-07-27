@@ -65,6 +65,8 @@ COPY star_fusion_pipeline.py /opt/star_fusion_pipeline.py
 COPY gene-list /home/gene-list
 COPY save-list /home/save-list
 COPY delete-list /home/delete-list
+COPY test/star-fusion.fusion_candidates.final.abridged.FFPM /home/star-fusion.fusion_candidates.final.abridged.FFPM
+COPY test/FusionInspector.fusion_predictions.final.abridged.FFPM /home/FusionInspector.fusion_predictions.final.abridged.FFPM
 
 # Data processing occurs at /data
 WORKDIR /data
