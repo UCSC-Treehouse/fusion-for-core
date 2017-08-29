@@ -58,10 +58,11 @@ RUN wget https://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.3.1/bowt
 
 # FusionInspector needs the TRINITY_HOME environment variable
 ENV TRINITY_HOME "/opt/trinityrnaseq-Trinity-v2.4.0/"
-ENV PATH "/opt/bowtie2-2.3.1:/opt/trinityrnaseq-Trinity-v2.4.0:/opt/FusionInspector-v1.0.1:$PATH"
+ENV PATH "/opt/bowtie2-2.3.1:/opt/trinityrnaseq-Trinity-v2.4.0:/opt/FusionInspector-v1.0.1:/opt:$PATH"
 
 # Add wrapper scripts
 COPY star_fusion_pipeline.py /opt/star_fusion_pipeline.py
+COPY convert_star_to_bedpe.py /opt/convert_star_to_bedpe.py
 COPY gene-list /home/gene-list
 COPY save-list /home/save-list
 COPY delete-list /home/delete-list

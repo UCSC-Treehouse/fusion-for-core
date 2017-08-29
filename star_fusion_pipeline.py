@@ -8,7 +8,33 @@ import os
 import shutil
 import subprocess
 import sys
+import tarfile
 
+def untargz(input_targz_file, untar_to_dir):
+    """
+    This module accepts a tar.gz archive and untars it.
+    RETURN VALUE: path to the untar-ed directory/file
+    Copied from the ProTECT common library
+
+    NOTE: this module expects the multiple files to be in a directory before
+          being tar-ed.
+    """
+    print('Extracting STAR index.', file=sys.stderr)
+    assert tarfile.is_tarfile(input_targz_file), 'Not a tar file.'
+    tarball = tarfile.open(input_targz_file)
+    return_value = os.path.join(untar_to_dir, tarball.getmembers()[0].name)
+    tarball.extractall(path=untar_to_dir)
+    tarball.close()
+    return return_value
+
+def makeBedpe(infile, outfile):
+    """
+    Takes star-fusion-non-filtered.final or star-fusion-gene-list-filtered.final and creates bedpe format 
+    """
+    cmd = ['convert_star_to_bedpe.py', infile]
+    bedpe = subprocess.check_output(cmd)
+    with open(outfile, 'w') as o:
+        o.write(bedpe)
 
 def pipeline(args):
     """
@@ -45,6 +71,9 @@ def pipeline(args):
     results = os.path.abspath('%s/star-fusion-non-filtered.final' % args.output_dir)
     os.rename(output, results)
 
+    # Create bedpe format
+    makeBedpe(results, os.path.abspath('%s/star-fusion-non-filtered.final.bedpe' % args.output_dir))
+
     if args.skip_filter:
         print('Skipping filter.', file=sys.stderr)
 
@@ -76,6 +105,9 @@ def pipeline(args):
 
         # Update results file
         results = out_f.name
+
+        # Create bedpe format
+        makeBedpe(results, os.path.abspath('%s/star-fusion-gene-list-filtered.final.bedpe' % args.output_dir))
 
     if args.run_fusion_inspector:
         # Check input file for at least one fusion prediction
@@ -147,7 +179,7 @@ def main():
     parser.add_argument('--genome-lib-dir',
                         dest='genome_lib_dir',
                         required=True,
-                        help='Reference genome directory')
+                        help='Reference genome directory (can be tarfile)')
     parser.add_argument('--CPU',
                         default=str(multiprocessing.cpu_count()),
                         help='Number of jobs to run in parallel')
@@ -185,15 +217,22 @@ def main():
     args = parser.parse_args()
 
     # Check if output directory already exists. The final permissions are set
-    # to the permissions of the output directory.
+    # to the permissions of the output directory if run_as_root is not set.
     if not os.path.exists(args.output_dir):
-        raise ValueError('Stopping: output directory does not exist.')
+        if args.run_as_root:
+            os.mkdir(args.output_dir)
+        else:
+            raise ValueError('Stopping: output directory does not exist and run_as_root is not set.')
 
     # Check that output is not owned by root
     stat = os.stat(args.output_dir)
     # Note that the flag is root-ownership
     if not args.run_as_root and stat.st_uid == 0:
         raise ValueError('Stopping: output directory owned by root user.')
+
+    # Untar the genome directory if necessary
+    if os.path.isfile(args.genome_lib_dir):
+        args.genome_lib_dir = untargz(args.genome_lib_dir, '/tmp')
 
     # This is based on the Toil RNA-seq pipeline:
     # https://github.com/BD2KGenomics/toil-rnaseq/blob/master/docker/wrapper.py#L51
