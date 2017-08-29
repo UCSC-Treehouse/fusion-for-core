@@ -90,36 +90,41 @@ def pipeline(args):
                 print("Stopping: no fusions were found.", file=sys.stderr)
                 return
 
-        fi_path = os.path.abspath(os.path.join(args.output_dir, 'FI-output'))
+        fusion_inspector(results, args)
 
-        cmd = ['FusionInspector',
-               '--fusions', os.path.abspath(results),
-               '--genome_lib', os.path.abspath(args.genome_lib_dir),
-               '--left_fq', os.path.abspath(args.r1),
-               '--right_fq', os.path.abspath(args.r2),
-               '--out_dir', fi_path,
-               '--out_prefix', 'FusionInspector',
-               '--prep_for_IGV',
-               '--CPU', args.CPU]
 
-        fi_output = 'FusionInspector.fusion_predictions.final.abridged.FFPM'
+def fusion_inspector(results, args):
 
-        if args.test:
-            cmd = ['echo'] + cmd
-            os.mkdir(os.path.join(args.output_dir, 'FI-output'))
-            shutil.copy('/home/FusionInspector.fusion_predictions.final.abridged.FFPM',
-                        os.path.join(fi_path, fi_output))
+    fi_path = os.path.abspath(os.path.join(args.output_dir, 'FI-output'))
 
-        if args.debug:
-            print(cmd, file=sys.stderr)
+    cmd = ['FusionInspector',
+           '--fusions', os.path.abspath(results),
+           '--genome_lib', os.path.abspath(args.genome_lib_dir),
+           '--left_fq', os.path.abspath(args.r1),
+           '--right_fq', os.path.abspath(args.r2),
+           '--out_dir', fi_path,
+           '--out_prefix', 'FusionInspector',
+           '--prep_for_IGV',
+           '--CPU', args.CPU]
 
-        print('Beginning FusionInspector run.', file=sys.stderr)
-        subprocess.check_call(cmd)
+    fi_output = 'FusionInspector.fusion_predictions.final.abridged.FFPM'
 
-        # Rename the output so it is a little clearer
-        fi_results = 'fusion-inspector-results.final'
-        os.rename(os.path.join(fi_path, fi_output),
-                  os.path.join(fi_path, fi_results))
+    if args.test:
+        cmd = ['echo'] + cmd
+        os.mkdir(os.path.join(args.output_dir, 'FI-output'))
+        shutil.copy('/home/FusionInspector.fusion_predictions.final.abridged.FFPM',
+                    os.path.join(fi_path, fi_output))
+
+    if args.debug:
+        print(cmd, file=sys.stderr)
+
+    print('Beginning FusionInspector run.', file=sys.stderr)
+    subprocess.check_call(cmd)
+
+    # Rename the output so it is a little clearer
+    fi_results = 'fusion-inspector-results.final'
+    os.rename(os.path.join(fi_path, fi_output),
+              os.path.join(fi_path, fi_results))
 
 
 def main():
@@ -156,6 +161,9 @@ def main():
                         dest='run_fusion_inspector',
                         action='store_true',
                         help='Runs FusionInspector on STAR-Fusion output')
+    parser.add_argument('--star-fusion-results',
+                        dest='star_fusion_results',
+                        help='Skips STAR-Fusion and runs FusionInspector')
     parser.add_argument('--save-intermediates',
                         dest='save_intermediates',
                         action='store_true',
@@ -190,8 +198,13 @@ def main():
     # This is based on the Toil RNA-seq pipeline:
     # https://github.com/BD2KGenomics/toil-rnaseq/blob/master/docker/wrapper.py#L51
     try:
-        print("Starting Treehouse fusion pipeline.", file=sys.stderr)
-        pipeline(args)
+        if args.star_fusion_results:
+            print("Starting FusionInspector run.", file=sys.stderr)
+            fusion_inspector(args.star_fusion_results, args)
+
+        else:
+            print("Starting Treehouse fusion pipeline.", file=sys.stderr)
+            pipeline(args)
 
     except subprocess.CalledProcessError as e:
         print(e.message, file=sys.stderr)
