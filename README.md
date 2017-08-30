@@ -13,7 +13,7 @@ Gene fusions play a major role in tumorigenesis, so it is crucial that Treehouse
 
 REPOSITORY: ucsctreehouse/fusion
 
-TAG: 0.1.0
+TAG: 0.2.0
 
 
 ##### Input files
@@ -30,12 +30,14 @@ optional arguments:
   --output-dir OUTPUT_DIR
                         Output directory
   --genome-lib-dir GENOME_LIB_DIR
-                        Reference genome directory
+                        Reference genome directory (can be tarfile)
   --CPU CPU             Number of jobs to run in parallel
   --genelist GENELIST
   --skip-filter         Skips gene-list filter
   -F, --run-fusion-inspector
                         Runs FusionInspector on STAR-Fusion output
+  --star-fusion-results STAR_FUSION_RESULTS
+                        Skips STAR-Fusion and runs FusionInspector
   --save-intermediates  Does not delete intermediate files
   --root-ownership      Does not change file ownership to user
   --test                Runs the pipeline with dummy files
@@ -57,20 +59,19 @@ docker run -it --rm -v `pwd`:/data ucsctreehouse/fusion:0.1.0 \
 STAR-Fusion Output
 * STAR-Fusion candidates and fusion fragments per million mapped read values
     * star-fusion-non-filtered.final
+    * star-fusion-non-filtered.final.bedpe
 * Fusions where donor and acceptor genes passed the gene-list filter
     * star-fusion-gene-list-filtered.final
+    * star-fusion-gene-list-filtered.final.bedpe
 
 FusionInspector Output
 * FusionInspector candidates and fusion fragments per million mapped read values where donor and acceptor passed gene-list filter
     * fusion-inspector-results.final
-* *de novo* assembled transcripts using Trinity program
-    * FusionInspector.gmap_trinity_GG.fusions.fasta
+    * fusion-inspector-results.final.bedpe
 * IGV input files for visualization
     * FusionInspector.fa
     * FusionInspector.gtf
     * FusionInspector.junction_reads.bam
     * FusionInspector.spanning_reads.bam
 
-FusionInspector is configured to *de novo* assemble fusion transcripts using Trinity and to create 
-IGV input files for viewing fusion sequences. FusionInspector predictions with a joint FFPM > 0.1 
-are considered significant.
+FusionInspector predictions with a joint FFPM > 0.1 are considered significant.
