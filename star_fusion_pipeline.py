@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tarfile
 
+
 def untargz(input_targz_file, untar_to_dir):
     """
     This module accepts a tar.gz archive and untars it.
@@ -27,7 +28,8 @@ def untargz(input_targz_file, untar_to_dir):
     tarball.close()
     return return_value
 
-def makeBedpe(infile, outfile):
+
+def make_bedpe(infile, outfile):
     """
     Takes star-fusion-non-filtered.final or star-fusion-gene-list-filtered.final and creates bedpe format 
     """
@@ -35,6 +37,7 @@ def makeBedpe(infile, outfile):
     bedpe = subprocess.check_output(cmd)
     with open(outfile, 'w') as o:
         o.write(bedpe)
+
 
 def pipeline(args):
     """
@@ -72,7 +75,7 @@ def pipeline(args):
     os.rename(output, results)
 
     # Create bedpe format
-    makeBedpe(results, os.path.abspath('%s/star-fusion-non-filtered.final.bedpe' % args.output_dir))
+    make_bedpe(results, os.path.abspath('%s/star-fusion-non-filtered.final.bedpe' % args.output_dir))
 
     if args.skip_filter:
         print('Skipping filter.', file=sys.stderr)
@@ -107,7 +110,7 @@ def pipeline(args):
         results = out_f.name
 
         # Create bedpe format
-        makeBedpe(results, os.path.abspath('%s/star-fusion-gene-list-filtered.final.bedpe' % args.output_dir))
+        make_bedpe(results, os.path.abspath('%s/star-fusion-gene-list-filtered.final.bedpe' % args.output_dir))
 
     if args.run_fusion_inspector:
         # Check input file for at least one fusion prediction
@@ -139,7 +142,7 @@ def fusion_inspector(results, args):
            '--prep_for_IGV',
            '--CPU', args.CPU]
 
-    fi_output = 'FusionInspector.fusion_predictions.final.abridged.FFPM'
+    fi_output = os.path.join(fi_path, 'FusionInspector.fusion_predictions.final.abridged.FFPM')
 
     if args.test:
         cmd = ['echo'] + cmd
@@ -154,12 +157,11 @@ def fusion_inspector(results, args):
     subprocess.check_call(cmd)
 
     # Rename the output so it is a little clearer
-    fi_results = 'fusion-inspector-results.final'
-    os.rename(os.path.join(fi_path, fi_output),
-              os.path.join(fi_path, fi_results))
+    fi_rename = os.path.join(fi_path, 'fusion-inspector-results.final')
+    os.rename(fi_output, fi_rename)
 
     # Create bedpe format
-    makeBedpe(fi_results, os.path.abspath('%s/fusion-inspector-results.final.bedpe' % args.output_dir))
+    make_bedpe(fi_rename, os.path.join(fi_path, 'fusion-inspector-results.final.bedpe'))
 
 
 def main():
@@ -255,7 +257,7 @@ def main():
         # Check if FusionInspector directory still exists
         fi_path = os.path.abspath(os.path.join(args.output_dir, 'FI-output'))
         if os.path.exists(fi_path):
-            # FusionInspector requires a sub-directory fo run correctly
+            # FusionInspector requires a sub-directory to run correctly
             # Here, I move the FI-output files into the parent directory
             for f in os.listdir(fi_path):
                 shutil.move(os.path.join(fi_path, f),
