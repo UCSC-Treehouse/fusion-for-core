@@ -6,7 +6,7 @@ cwlVersion: v1.0
 
 requirements:
   - class: DockerRequirement
-    dockerPull: "ucsctreehouse/fusion:0.1.0"
+    dockerPull: "ucsctreehouse/fusion:0.2.0"
 
 baseCommand: []
 
