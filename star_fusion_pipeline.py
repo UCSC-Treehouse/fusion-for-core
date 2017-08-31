@@ -160,9 +160,6 @@ def fusion_inspector(results, args):
     fi_rename = os.path.join(fi_path, 'fusion-inspector-results.final')
     os.rename(fi_output, fi_rename)
 
-    # Create bedpe format
-    make_bedpe(fi_rename, os.path.join(fi_path, 'fusion-inspector-results.final.bedpe'))
-
 
 def main():
     """
