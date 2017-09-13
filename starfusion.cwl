@@ -5,6 +5,7 @@ label: "STAR-fusion workflow by Jacob Pfeil; CWL by Jeltje van Baren"
 cwlVersion: v1.0
 
 requirements:
+  - class: InlineJavascriptRequirement
   - class: DockerRequirement
     dockerPull: "ucsctreehouse/fusion:0.2.0"
 
@@ -76,11 +77,19 @@ inputs:
 
 outputs:
 
-  output:
-    type: Directory
+  output1:
+    type: File
     outputBinding:
-       glob: $(inputs.outputdir)
-
-
-
-
+       glob: $(inputs.outputdir+'/star-fusion-gene-list-filtered.final')
+  output2:
+    type: File
+    outputBinding:
+       glob: $(inputs.outputdir+'/star-fusion-gene-list-filtered.final.bedpe')
+  output3:
+    type: File
+    outputBinding:
+       glob: $(inputs.outputdir+'/star-fusion-non-filtered.final')
+  output4:
+    type: File
+    outputBinding:
+       glob: $(inputs.outputdir+'/star-fusion-non-filtered.final.bedpe')
