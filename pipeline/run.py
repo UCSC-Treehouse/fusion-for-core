@@ -9,7 +9,7 @@ import shutil
 import subprocess
 import sys
 
-from library.utils import untargz, star_to_bedpe
+from library.utils import untargz
 
 
 def pipeline(args):
@@ -47,10 +47,6 @@ def pipeline(args):
     results = os.path.abspath('%s/star-fusion-non-filtered.final' % args.output_dir)
     os.rename(output, results)
 
-    # Create bedpe format
-    if args.output_bedpe:
-        star_to_bedpe(results, os.path.abspath('%s/star-fusion-non-filtered.final.bedpe' % args.output_dir))
-
     if args.skip_filter:
         print('Skipping filter.', file=sys.stderr)
 
@@ -82,10 +78,6 @@ def pipeline(args):
 
         # Update results file
         results = out_f.name
-
-        # Create bedpe format
-        if args.output_bedpe:
-            star_to_bedpe(results, os.path.abspath('%s/star-fusion-gene-list-filtered.final.bedpe' % args.output_dir))
 
     if args.run_fusion_inspector:
         # Check input file for at least one fusion prediction
@@ -174,10 +166,6 @@ def main():
                         dest='untargz_ref',
                         action='store_true',
                         help='Expands tar/gzipped reference file')
-    parser.add_argument('--output-bedpe',
-                        dest='output_bedpe',
-                        action='store_true',
-                        help='Reformat STAR-Fusion output in BEDPE format')
     parser.add_argument('--star-fusion-results',
                         dest='star_fusion_results',
                         help='Skips STAR-Fusion and runs FusionInspector')
