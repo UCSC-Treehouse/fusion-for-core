@@ -8,35 +8,8 @@ import os
 import shutil
 import subprocess
 import sys
-import tarfile
 
-
-def untargz(input_targz_file, untar_to_dir):
-    """
-    This module accepts a tar.gz archive and untars it.
-    RETURN VALUE: path to the untar-ed directory/file
-    Copied from the ProTECT common library
-
-    NOTE: this module expects the multiple files to be in a directory before
-          being tar-ed.
-    """
-    print('Extracting STAR index.', file=sys.stderr)
-    assert tarfile.is_tarfile(input_targz_file), 'Not a tar file.'
-    tarball = tarfile.open(input_targz_file)
-    return_value = os.path.join(untar_to_dir, tarball.getmembers()[0].name)
-    tarball.extractall(path=untar_to_dir)
-    tarball.close()
-    return return_value
-
-
-def make_bedpe(infile, outfile):
-    """
-    Takes star-fusion-non-filtered.final or star-fusion-gene-list-filtered.final and creates bedpe format 
-    """
-    cmd = ['convert_star_to_bedpe.py', infile]
-    bedpe = subprocess.check_output(cmd)
-    with open(outfile, 'w') as o:
-        o.write(bedpe)
+from library.utils import untargz, star_to_bedpe
 
 
 def pipeline(args):
@@ -75,7 +48,8 @@ def pipeline(args):
     os.rename(output, results)
 
     # Create bedpe format
-    make_bedpe(results, os.path.abspath('%s/star-fusion-non-filtered.final.bedpe' % args.output_dir))
+    if args.output_bedpe:
+        star_to_bedpe(results, os.path.abspath('%s/star-fusion-non-filtered.final.bedpe' % args.output_dir))
 
     if args.skip_filter:
         print('Skipping filter.', file=sys.stderr)
@@ -110,7 +84,8 @@ def pipeline(args):
         results = out_f.name
 
         # Create bedpe format
-        make_bedpe(results, os.path.abspath('%s/star-fusion-gene-list-filtered.final.bedpe' % args.output_dir))
+        if args.output_bedpe:
+            star_to_bedpe(results, os.path.abspath('%s/star-fusion-gene-list-filtered.final.bedpe' % args.output_dir))
 
     if args.run_fusion_inspector:
         # Check input file for at least one fusion prediction
@@ -195,6 +170,14 @@ def main():
                         dest='run_fusion_inspector',
                         action='store_true',
                         help='Runs FusionInspector on STAR-Fusion output')
+    parser.add_argument('--untargz-ref',
+                        dest='untargz_ref',
+                        action='store_true',
+                        help='Expands tar/gzipped reference file')
+    parser.add_argument('--output-bedpe',
+                        dest='output_bedpe',
+                        action='store_true',
+                        help='Reformat STAR-Fusion output in BEDPE format')
     parser.add_argument('--star-fusion-results',
                         dest='star_fusion_results',
                         help='Skips STAR-Fusion and runs FusionInspector')
@@ -233,7 +216,7 @@ def main():
         raise ValueError('Stopping: output directory owned by root user.')
 
     # Untar the genome directory if necessary
-    if os.path.isfile(args.genome_lib_dir):
+    if args.untargz_ref and os.path.isfile(args.genome_lib_dir):
         args.genome_lib_dir = untargz(args.genome_lib_dir, '/tmp')
 
     # This is based on the Toil RNA-seq pipeline:
