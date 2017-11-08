@@ -74,4 +74,4 @@ FusionInspector Output
     * FusionInspector.junction_reads.bam
     * FusionInspector.spanning_reads.bam
 
-FusionInspector predictions with a joint FFPM > 0.1 are considered significant.
+Fusion predictions with a large anchor support (YES_LDAS) and total FFPM > 0.1 are considered significant.
