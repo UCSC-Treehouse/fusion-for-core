@@ -3,6 +3,7 @@
 from __future__ import print_function
 import argparse
 import csv
+import glob
 import multiprocessing
 import os
 import shutil
@@ -178,6 +179,11 @@ def main():
                         dest='output_dir',
                         required=True,
                         help='Output directory')
+    parser.add_argument('--tar-gz',
+                        dest='tar_gz',
+                        action='store_true',
+                        default=False,
+                        help='Compresses output directory to tar.gz file')
     parser.add_argument('--genome-lib-dir',
                         dest='genome_lib_dir',
                         required=True,
@@ -292,6 +298,15 @@ def main():
                 # Remove directory
                 except OSError:
                     shutil.rmtree(d)
+
+        # https://gist.github.com/dreikanter/2835292
+        if args.tar_gz:
+            tarname = '%s.tar.gz' % args.output_dir
+            print('Compressing files to %s' % tarname)
+            tar = tarfile.open(tarname, "w:gz")
+            for fname in glob.glob(args.ouput_dir):
+                tar.add(fname, os.path.basename(fname))
+            tar.close()
 
 
 if __name__ == '__main__':
