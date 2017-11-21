@@ -84,12 +84,4 @@ outputs:
   output2:
     type: File
     outputBinding:
-       glob: $(inputs.outputdir+'/star-fusion-gene-list-filtered.final.bedpe')
-  output3:
-    type: File
-    outputBinding:
        glob: $(inputs.outputdir+'/star-fusion-non-filtered.final')
-  output4:
-    type: File
-    outputBinding:
-       glob: $(inputs.outputdir+'/star-fusion-non-filtered.final.bedpe')
