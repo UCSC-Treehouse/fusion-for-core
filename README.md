@@ -13,7 +13,7 @@ Gene fusions play a major role in tumorigenesis, so it is crucial that Treehouse
 
 REPOSITORY: ucsctreehouse/fusion
 
-TAG: 0.2.0
+TAG: 0.3.0
 
 
 ##### Input files
@@ -29,6 +29,7 @@ optional arguments:
   --right-fq R2         Fastq 2
   --output-dir OUTPUT_DIR
                         Output directory
+  --tar-gz              Compresses output directory to tar.gz file
   --genome-lib-dir GENOME_LIB_DIR
                         Reference genome directory (can be tarfile)
   --CPU CPU             Number of jobs to run in parallel
@@ -59,15 +60,12 @@ docker run -it --rm -v `pwd`:/data ucsctreehouse/fusion:0.1.0 \
 STAR-Fusion Output
 * STAR-Fusion candidates and fusion fragments per million mapped read values
     * star-fusion-non-filtered.final
-    * star-fusion-non-filtered.final.bedpe
 * Fusions where donor and acceptor genes passed the gene-list filter
     * star-fusion-gene-list-filtered.final
-    * star-fusion-gene-list-filtered.final.bedpe
 
 FusionInspector Output
 * FusionInspector candidates and fusion fragments per million mapped read values where donor and acceptor passed gene-list filter
     * fusion-inspector-results.final
-    * fusion-inspector-results.final.bedpe
 * IGV input files for visualization
     * FusionInspector.fa
     * FusionInspector.gtf

@@ -8,6 +8,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tarfile
 
 from library.utils import untargz
 
