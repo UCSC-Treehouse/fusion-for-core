@@ -7,7 +7,7 @@ cwlVersion: v1.0
 requirements:
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: "ucsctreehouse/fusion:0.2.0"
+    dockerPull: "ucsctreehouse/fusion:0.3.0"
 
 baseCommand: []
 
@@ -28,6 +28,12 @@ inputs:
     default: starfusion_out 
     inputBinding:
       prefix: --output-dir
+
+  tar_gz:
+    type: boolean
+    default: False
+    inputBinding:
+      prefix: --tar-gz
 
   index:
     type: File
