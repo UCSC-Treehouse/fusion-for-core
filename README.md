@@ -48,7 +48,7 @@ optional arguments:
 
 ##### Run command
 ```
-docker run -it --rm -v `pwd`:/data ucsctreehouse/fusion:0.1.0 \
+docker run -it --rm -v `pwd`:/data ucsctreehouse/fusion:0.3.0 \
                                    --left-fq 1.fq.gz \
                                    --right-fq 2.fq.gz \
                                    --output-dir fusion_output \
