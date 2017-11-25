@@ -62,11 +62,8 @@ ENV PATH "/opt/bowtie2-2.3.1:/opt/trinityrnaseq-Trinity-v2.4.0:/opt/FusionInspec
 
 # Add wrapper scripts
 COPY pipeline /opt/pipeline
-COPY pipeline/data/gene-list /home/gene-list
-COPY pipeline/data/save-list /home/save-list
-COPY pipeline/data/delete-list /home/delete-list
-COPY pipeline/test/star-fusion.fusion_candidates.final.abridged.FFPM /home/star-fusion.fusion_candidates.final.abridged.FFPM
-COPY pipeline/test/FusionInspector.fusion_predictions.final.abridged.FFPM /home/FusionInspector.fusion_predictions.final.abridged.FFPM
+
+ENV FUSION_SRC=/opt/pipeline
 
 # Data processing occurs at /data
 WORKDIR /data

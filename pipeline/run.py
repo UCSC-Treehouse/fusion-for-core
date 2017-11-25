@@ -3,16 +3,19 @@
 from __future__ import print_function
 import argparse
 import csv
-import glob
 import multiprocessing
 import os
 import shutil
 import subprocess
 import sys
 import tarfile
+import tempfile
 
 from library.utils import untargz
 
+src_path = os.environ['FUSION_SRC']
+if not src_path:
+    raise ValueError('Need to set FUSION_SRC path')
 
 def pipeline(args):
     """
@@ -29,12 +32,15 @@ def pipeline(args):
            '--right_fq', args.r2,
            '--CPU', args.CPU]
 
-    output = os.path.abspath('%s/star-fusion.fusion_candidates.final.abridged.FFPM' % args.output_dir)
+    outpath = os.path.abspath('%s/star-fusion.fusion_candidates.final.abridged.FFPM' % args.output_dir)
 
     if args.test:
         cmd = ['echo'] + cmd
-        shutil.copy('/home/star-fusion.fusion_candidates.final.abridged.FFPM',
-                    output)
+        inpath = os.path.join(src_path,
+                              'test',
+                              'star-fusion.fusion_candidates.final.abridged.FFPM')
+        shutil.copy(inpath,
+                    outpath)
 
     if args.debug:
         print(cmd, file=sys.stderr)
@@ -43,11 +49,11 @@ def pipeline(args):
     subprocess.check_call(cmd)
 
     # Check that local output exists
-    if not os.path.exists(output):
+    if not os.path.exists(outpath):
         raise ValueError('Could not find output from STAR-Fusion')
 
     results = os.path.abspath('%s/star-fusion-non-filtered.final' % args.output_dir)
-    os.rename(output, results)
+    os.rename(outpath, results)
 
     if args.skip_filter:
         print('Skipping filter.', file=sys.stderr)
@@ -66,7 +72,7 @@ def pipeline(args):
         with open(results, 'r') as in_f, open(gl_results, 'w') as out_f:
             reader = csv.reader(in_f, delimiter='\t')
             writer = csv.writer(out_f, delimiter='\t')
-            header = reader.next()
+            header = next(reader)
             writer.writerow(header)
 
             for line in reader:
@@ -86,7 +92,7 @@ def pipeline(args):
         with open(results, 'r') as f:
 
             # Header line
-            f.next()
+            next(f)
             try:
                 f.next()
 
@@ -116,7 +122,10 @@ def fusion_inspector(results, args):
     if args.test:
         cmd = ['echo'] + cmd
         os.mkdir(os.path.join(args.output_dir, 'FI-output'))
-        shutil.copy('/home/FusionInspector.fusion_predictions.final.abridged.FFPM',
+        inpath = os.path.join(src_path,
+                              'test',
+                              'FusionInspector.fusion_predictions.final.abridged.FFPM')
+        shutil.copy(inpath,
                     os.path.join(fi_path, fi_output))
 
     if args.debug:
@@ -137,11 +146,9 @@ def main():
     parser = argparse.ArgumentParser(description=main.__doc__)
     parser.add_argument('--left-fq',
                         dest='r1',
-                        required=True,
                         help='Fastq 1')
     parser.add_argument('--right-fq',
                         dest='r2',
-                        required=True,
                         help='Fastq 2')
     parser.add_argument('--output-dir',
                         dest='output_dir',
@@ -149,18 +156,16 @@ def main():
                         help='Output directory')
     parser.add_argument('--tar-gz',
                         dest='tar_gz',
-                        action='store_true',
-                        default=False,
-                        help='Compresses output directory to tar.gz file')
+                        help='Name for output tar.gz file')
     parser.add_argument('--genome-lib-dir',
                         dest='genome_lib_dir',
-                        required=True,
                         help='Reference genome directory (can be tarfile)')
     parser.add_argument('--CPU',
                         default=str(multiprocessing.cpu_count()),
                         help='Number of jobs to run in parallel')
     parser.add_argument('--genelist',
-                        default='/home/gene-list')
+                        default=os.path.join(src_path, 'data', 'gene-list'),
+                        help='List of genes to filter fusion on')
     parser.add_argument('--skip-filter',
                         help='Skips gene-list filter',
                         dest='skip_filter',
@@ -195,6 +200,12 @@ def main():
                         action='store_true',
                         default=False)
     args = parser.parse_args()
+
+    if args.test:
+        args.r1, args.r2, args.genome_lib_dir = 3 * [os.devnull]
+
+    elif not all([args.r1, args.r2, args.genome_lib_dir]):
+        raise ValueError('Need --left-fq and --right-fq and --genome-lib-dir')
 
     # Check if output directory already exists. The final permissions are set
     # to the permissions of the output directory if run_as_root is not set.
@@ -250,7 +261,7 @@ def main():
             print('Cleaning output directory.', file=sys.stderr)
 
             delete = set()
-            with open('/home/delete-list') as f:
+            with open(os.path.join(src_path, 'data', 'delete-list')) as f:
                 for line in f:
                     delete.add(line.strip())
 
@@ -273,12 +284,13 @@ def main():
 
         # https://gist.github.com/dreikanter/2835292
         if args.tar_gz:
-            tarname = '%s.tar.gz' % args.output_dir
+            tarname = '%s.tar.gz' % args.tar_gz
             print('Compressing files to %s' % tarname)
-            tar = tarfile.open(tarname, "w:gz")
-            for fname in glob.glob(args.output_dir):
-                tar.add(fname, os.path.basename(fname))
-            tar.close()
+            tmp_dir = tempfile.mkdtemp()
+            tardir = os.path.join(tmp_dir, tarname)
+            with tarfile.open(tardir, "w:gz") as tar:
+                tar.add(args.output_dir, arcname=args.tar_gz)
+            shutil.move(tardir, os.path.join(args.output_dir, tarname))
 
 
 if __name__ == '__main__':

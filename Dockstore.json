@@ -1,0 +1,13 @@
+{
+  "outputdir": "/tmp/starfusion_out",
+  "output_files": {
+    "path": "/tmp/starfusion_out/starfusion_out.tar.gz",
+    "class": "File"
+  },
+  "skip_filter": false,
+  "test": true,
+  "cpu": 8,
+  "save_intermediates": false,
+  "root-ownership": true, 
+  "debug": true
+}

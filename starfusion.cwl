@@ -4,6 +4,14 @@ class: CommandLineTool
 label: "STAR-fusion workflow by Jacob Pfeil; CWL by Jeltje van Baren"
 cwlVersion: v1.0
 
+doc: |
+     STAR-Fusion workflow by Jacob Pfeil; CWL by Jeltje van Baren
+
+dct:creator:
+  "@id": "https://orcid.org/0000-0002-8773-8520"
+  foaf:name: Jacob Pfeil
+  foaf:mbox: "mailto:jpfeil@ucsc.edu"
+
 requirements:
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
@@ -30,8 +38,8 @@ inputs:
       prefix: --output-dir
 
   tar_gz:
-    type: boolean
-    default: False
+    type: string
+    default: starfusion_out
     inputBinding:
       prefix: --tar-gz
 
@@ -57,12 +65,6 @@ inputs:
     inputBinding:
       prefix: --skip-filter
 
-  inspect:
-    type: boolean
-    default: False
-    inputBinding:
-      prefix: --run-fusion-inspector
-
   save_intermediates:
     type: boolean
     default: False
@@ -82,12 +84,7 @@ inputs:
       prefix: --test
 
 outputs:
-
-  output1:
+  output_files:
     type: File
     outputBinding:
-       glob: $(inputs.outputdir+'/star-fusion-gene-list-filtered.final')
-  output2:
-    type: File
-    outputBinding:
-       glob: $(inputs.outputdir+'/star-fusion-non-filtered.final')
+       glob: $(inputs.outputdir + '/*.tar.gz')
