@@ -52,7 +52,7 @@ docker run -it --rm -v `pwd`:/data ucsctreehouse/fusion:0.3.0 \
                                    --left-fq 1.fq.gz \
                                    --right-fq 2.fq.gz \
                                    --output-dir fusion_output \
-                                   --genome-lib-dir STARFusion-GRCh38gencode23
+                                   --genome-lib-dir STARFusion-GRCh38gencode23 \
                                    --run-fusion-inspector
 ```
 
