@@ -48,6 +48,12 @@ inputs:
     inputBinding:
       prefix: --genome-lib-dir
 
+  do_untar:
+    type: boolean
+    default: True
+    inputBinding:
+      prefix: --untargz-ref
+
   cpu:
     type: int
     default: 8
@@ -88,3 +94,4 @@ outputs:
     type: File
     outputBinding:
        glob: $(inputs.outputdir + '/*.tar.gz')
+
