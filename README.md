@@ -18,7 +18,7 @@ TAG: 0.3.0
 
 ##### Input files
 
-The pipeline requires paired-end fastq files, the output directory, and the genome library directory. The genelist is already baked into the docker container, but there is an option to include a different genelist. Please refer to the STAR-Fusion documentation for creating a genome library. You can also find a prebuilt genome library here: `http://ceph-gw-01.pod/references/STARFusion-GRCh38gencode23.tar.gz` 
+The pipeline requires paired-end fastq files, the output directory, and the genome library directory. The genelist is already baked into the docker container, but there is an option to include a different genelist. Please refer to the STAR-Fusion documentation for creating a genome library. 
 
 ```
 Wraps STAR-Fusion program and filters output using FusionInspector.
