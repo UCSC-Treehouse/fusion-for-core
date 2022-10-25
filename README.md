@@ -73,3 +73,7 @@ FusionInspector Output
     * FusionInspector.spanning_reads.bam
 
 Fusion predictions with a large anchor support (YES_LDAS) and total FFPM > 0.1 are considered significant.
+
+#### **Output conditions**
+
+Different output files are generated depending on the amount of evidence supporting the fusion calls. If star-fusion-gene-list-filtered.final contains no fusions, FusionInspector does not run and no fusion-inspector-results.final output file is generated. If star-fusion-gene-list-filtered.final contains fusions, FusionInspector runs. If the fusions meet FusionInspector's criteria, an output file is generated containing fusions. If they do not, an output file is generated containing column headings but no fusion data. 
