@@ -77,7 +77,7 @@ def pipeline(args):
 
             for line in reader:
                 gene1, gene2 = line[0].split('--')
-                if gene1 not in genelist and gene2 not in genelist:
+                if (gene1 not in genelist) and (gene2 not in genelist):
                     print('Neither fusion partner in  %s--%s is in gene list.' % (gene1, gene2), file=sys.stderr)
 
                 # If fusion call passed filter, then write it to the output
